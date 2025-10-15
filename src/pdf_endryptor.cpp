@@ -1,0 +1,77 @@
+#include "pdf_encryptor.hpp"
+#include <fstream>
+#include <iostream>
+
+PDFEncryptor::PDFEncryptor(const std::string &key)
+{
+    keyBytes.assign(key.begin(), key.end());
+    // Normalize key length to Twofish supported sizes (16, 24, 32)
+    size_t k = keyBytes.size();
+    if (k <= 16)
+    {
+        keyBytes.resize(16, 0);
+    }
+    else if (k <= 24)
+    {
+        keyBytes.resize(24, 0);
+    }
+    else if (k <= 32)
+    {
+        keyBytes.resize(32, 0);
+    }
+    else
+    {
+        keyBytes.resize(32);
+    }
+    encryptor = new TwofishEncryptor(keyBytes);
+}
+
+PDFEncryptor::~PDFEncryptor()
+{
+    delete encryptor;
+}
+
+bool PDFEncryptor::encryptPDF(const std::string &inputPath, const std::string &outputPath)
+{
+    std::vector<uint8_t> data = readFile(inputPath);
+    if (data.empty())
+    {
+        std::cerr << "Failed to read input file." << std::endl;
+        return false;
+    }
+    std::vector<uint8_t> encrypted = encryptor->encrypt(data);
+    return writeFile(outputPath, encrypted);
+}
+
+bool PDFEncryptor::decryptPDF(const std::string &inputPath, const std::string &outputPath)
+{
+    std::vector<uint8_t> data = readFile(inputPath);
+    if (data.empty())
+    {
+        std::cerr << "Failed to read input file." << std::endl;
+        return false;
+    }
+    std::vector<uint8_t> decrypted = encryptor->decrypt(data);
+    return writeFile(outputPath, decrypted);
+}
+
+std::vector<uint8_t> PDFEncryptor::readFile(const std::string &path)
+{
+    std::ifstream file(path, std::ios::binary);
+    if (!file)
+    {
+        return {};
+    }
+    return std::vector<uint8_t>((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+}
+
+bool PDFEncryptor::writeFile(const std::string &path, const std::vector<uint8_t> &data)
+{
+    std::ofstream file(path, std::ios::binary);
+    if (!file)
+    {
+        return false;
+    }
+    file.write(reinterpret_cast<const char *>(data.data()), data.size());
+    return true;
+}
