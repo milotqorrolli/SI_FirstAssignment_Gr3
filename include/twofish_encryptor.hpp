@@ -15,7 +15,19 @@ public:
     std::vector<uint8_t> decrypt(const std::vector<uint8_t> &ciphertext);
 
 private:
-    // internal details will be added later
+    // Twofish internal data
+    std::vector<uint32_t> keySchedule;  // key schedule words
+    std::vector<uint8_t> sBox0;         // first substitution box
+    std::vector<uint8_t> sBox1;         // second substitution box
+
+public:
+    // Inline constructor and destructor for simple init/destroy
+    inline TwofishEncryptor(const std::vector<uint8_t> &key)
+    {
+        keyScheduleGeneration(key); // initialize schedule
+    }
+
+    inline ~TwofishEncryptor() = default;
 };
 
 #endif // TWOFISH_ENCRYPTOR_HPP
