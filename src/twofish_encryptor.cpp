@@ -11,6 +11,7 @@
 
 using namespace CryptoPP;
 
+// Construct TwofishEncryptor and normalize key length to 16/24/32 bytes.
 TwofishEncryptor::TwofishEncryptor(const std::vector<uint8_t> &key)
 {
     // store key and normalize length to one of Twofish's supported sizes: 16, 24, or 32 bytes
@@ -34,9 +35,11 @@ TwofishEncryptor::TwofishEncryptor(const std::vector<uint8_t> &key)
     }
 }
 
+// Destructor - releases any resources (none owned here beyond vectors).
 TwofishEncryptor::~TwofishEncryptor() {}
 
-// Return ciphertext with a 16-byte IV prepended
+// Encrypt plaintext and return IV + ciphertext.
+// Uses Crypto++ CBC Twofish with PKCS padding.
 std::vector<uint8_t> TwofishEncryptor::encrypt(const std::vector<uint8_t> &plaintext)
 {
     AutoSeededRandomPool prng;
@@ -65,7 +68,7 @@ std::vector<uint8_t> TwofishEncryptor::encrypt(const std::vector<uint8_t> &plain
     return out;
 }
 
-// Expect ciphertext with IV prepended
+// Decrypt ciphertext that has IV prepended. Returns plaintext bytes.
 std::vector<uint8_t> TwofishEncryptor::decrypt(const std::vector<uint8_t> &ciphertext)
 {
     if (ciphertext.size() < Twofish::BLOCKSIZE)
@@ -96,7 +99,8 @@ std::vector<uint8_t> TwofishEncryptor::decrypt(const std::vector<uint8_t> &ciphe
 #pragma message("Crypto++ not found: Twofish real implementation disabled. Install Crypto++ and re-run CMake for full functionality.")
 #include <stdexcept>
 
-// Fallback stubs: compile, but throw at runtime if used.
+// Fallback stubs: compile when Crypto++ isn't available, but throw at runtime
+// if encrypt/decrypt are called. This makes the behavior explicit.
 std::vector<uint8_t> TwofishEncryptor::encrypt(const std::vector<uint8_t> &)
 {
     throw std::runtime_error("Crypto++ not available: encrypt not supported");
