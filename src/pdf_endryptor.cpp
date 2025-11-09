@@ -2,6 +2,9 @@
 #include <fstream>
 #include <iostream>
 
+// Constructor: convert textual key to bytes and normalize length to a
+// supported Twofish key size (16/24/32 bytes). Then create the
+// TwofishEncryptor instance used for file encryption/decryption.
 PDFEncryptor::PDFEncryptor(const std::string &key)
 {
     keyBytes.assign(key.begin(), key.end());
@@ -31,6 +34,8 @@ PDFEncryptor::~PDFEncryptor()
     delete encryptor;
 }
 
+// Read the input file, encrypt its bytes using the TwofishEncryptor,
+// and write the encrypted output. Returns true on success.
 bool PDFEncryptor::encryptPDF(const std::string &inputPath, const std::string &outputPath)
 {
     std::vector<uint8_t> data = readFile(inputPath);
@@ -43,6 +48,8 @@ bool PDFEncryptor::encryptPDF(const std::string &inputPath, const std::string &o
     return writeFile(outputPath, encrypted);
 }
 
+// Read encrypted input (IV + ciphertext), decrypt it and write the
+// resulting plaintext PDF bytes to outputPath. Returns true on success.
 bool PDFEncryptor::decryptPDF(const std::string &inputPath, const std::string &outputPath)
 {
     std::vector<uint8_t> data = readFile(inputPath);
@@ -55,6 +62,8 @@ bool PDFEncryptor::decryptPDF(const std::string &inputPath, const std::string &o
     return writeFile(outputPath, decrypted);
 }
 
+// Helper: read the entire file into a byte vector. Returns empty vector on
+// failure.
 std::vector<uint8_t> PDFEncryptor::readFile(const std::string &path)
 {
     std::ifstream file(path, std::ios::binary);
@@ -65,6 +74,7 @@ std::vector<uint8_t> PDFEncryptor::readFile(const std::string &path)
     return std::vector<uint8_t>((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 }
 
+// Helper: write a byte vector to a file. Returns true on success.
 bool PDFEncryptor::writeFile(const std::string &path, const std::vector<uint8_t> &data)
 {
     std::ofstream file(path, std::ios::binary);
