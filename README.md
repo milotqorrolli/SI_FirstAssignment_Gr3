@@ -1,3 +1,17 @@
+<table border="0">
+ <tr>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/University_of_Prishtina_logo.svg/1200px-University_of_Prishtina_logo.svg.png" width="150" alt="University Logo" /></td>
+    <td>
+      <p>Universiteti i Prishtinës</p>
+      <p>Fakulteti i Inxhinierisë Elektrike dhe Kompjuterike</p>
+      <p>Inxhinieri Kompjuterike dhe Softuerike - Programi Master</p>
+      <p>Lënda: Siguria e Informacionit</p>
+      <p>Profesor: Prof. Mergim Hoti</p>
+      <p>Studentë: Endrita Vllasaliu, Gent Zushi, Milot Qorolli</p>
+    </td>
+ </tr>
+</table>
+
 # Twofish PDF Encryptor
 
 A C++ application for encrypting and decrypting PDF documents using the Twofish symmetric key block cipher.
@@ -38,6 +52,3 @@ A C++ application for encrypting and decrypting PDF documents using the Twofish 
 - `data/`: Sample data
 - `build/`: Build directory
 
-## License
-
-[Add license here]
