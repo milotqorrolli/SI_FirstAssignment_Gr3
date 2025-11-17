@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.16)
+
 project(TwofishPDFEncryptor VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Qt6
+# Find Qt6 and Crypto++
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
-# --- START MANUAL CRYPTOPP SETUP ---
 set(CRYPTOPP_ROOT_DIR "/opt/homebrew/Cellar/cryptopp/8.9.0")
+
+target_include_directories(
+	include
+	${CRYPTOPP_ROOT_DIR}/include
+)
+
 set(CRYPTOPP_LIBRARY ${CRYPTOPP_ROOT_DIR}/lib/libcryptopp.dylib)
-# --- END MANUAL CRYPTOPP SETUP ---
 
 # Enable Qt features
 set(CMAKE_AUTOMOC ON)
@@ -18,27 +23,34 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
 
-# Source files (Cleaned, single line)
-set(SOURCES src/main.cpp src/twofish_encryptor.cpp src/pdf_encryptor.cpp src/mainwindow.cpp)
-
-# UI files (Cleaned, single line)
-set(UI_FILES ui/mainwindow.ui)
-
-# Create executable (Removed HEADERS, which don't belong here)
-add_executable(${PROJECT_NAME} ${SOURCES} ${UI_FILES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE USE_CRYPTOPP)
-
-# 1. Define include directories
-target_include_directories(${PROJECT_NAME} PRIVATE
-    include
-    ${CRYPTOPP_ROOT_DIR}/include
+# Source files
+set(SOURCES
+    src/main.cpp
+    src/twofish_encryptor.cpp
+    src/pdf_encryptor.cpp
+    src/mainwindow.cpp
 )
 
-# 2. Link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt6::Core
-    Qt6::Widgets
-    ${CRYPTOPP_LIBRARY}
+# Header files (optional, but good for IDEs)
+set(HEADERS
+    include/twofish_encryptor.hpp
+    include/pdf_encryptor.hpp
+    include/mainwindow.hpp
+)
+
+# UI files
+set(UI_FILES
+    ui/mainwindow.ui
+)
+
+# Create executable
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI_FILES})
+
+# Link Qt libraries
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+	Qt6::Core 
+	Qt6::Widgets
+	${CRYPTOPP_LIBRARY}
 )
 
 # Optional: Set output directory

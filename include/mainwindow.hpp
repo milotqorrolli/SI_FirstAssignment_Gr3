@@ -47,13 +47,6 @@ private:
     // UI state
     QString inputFilePath;
     QString outputFilePath;
-    QLineEdit *keyInput;
-    QLabel *inputLabel;
-    QLabel *outputLabel;
-    QPushButton *encryptButton;
-    QPushButton *decryptButton;
-    QPushButton *selectInputButton;
-    QPushButton *selectOutputButton;
 };
 
 #endif

@@ -104,3 +104,4 @@ void MainWindow::onSelectOutputFile()
         ui->outputLineEdit->setText(outputFilePath);
     }
 }
+#include "moc_mainwindow.cpp"
